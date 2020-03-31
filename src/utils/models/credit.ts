@@ -1,4 +1,4 @@
-export interface Person {
+export interface Credit {
   credit_id: string,
   gender: number,
   id: number,
