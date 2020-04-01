@@ -4,6 +4,8 @@ import { Logger } from '@overnightjs/logger';
 import {decode} from "urlencode"
 
 import MovieAPI from '../utils/MovieDB'
+import createPostTemplate from '../template/post'
+import resizeImg from '../utils/ImageHandle';
 
 @Controller('api')
 export class SearchController {
@@ -74,5 +76,43 @@ export class SearchController {
           error: error.toString()
         });
       })
+    }
+
+    @Get('make-template')
+    private makeTemplate(req: Request, res: Response) {
+      const text = decode (req.query.text) 
+      const no = decode (req.query.no) 
+      const title = decode (req.query.title) 
+      const year = decode (req.query.year) 
+      const genre = decode (req.query.genre) 
+      const directors = decode (req.query.directors) 
+      const amazonlink = decode (req.query.amazonlink) 
+      const trailer = decode (req.query.trailer)
+      const poster = decode (req.query.poster)
+      
+      return res.status(200).json({
+        success: true,
+        result: createPostTemplate(
+          text,
+          no,
+          title,
+          year,
+          genre,
+          directors,
+          amazonlink,
+          trailer,
+          poster
+          )
+      });
+    }
+
+    @Get('resize-img')
+    private resizeImg(req: Request, res: Response) {
+      const location = decode (req.query.location)
+      const title = decode (req.query.title)
+      
+      res.setHeader('Content-disposition', `attachment; filename=${title}.png`);
+      res.setHeader('Content-type', 'image/png');
+      resizeImg(location, res)
     }
 }
